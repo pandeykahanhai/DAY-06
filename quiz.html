@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wizarding Quiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+
+@keyframes moveStars {
+  from { background-position: 0 0; }
+  to { background-position: 1500px 1500px; } /* Move far */
+}
+
+
+    :root{
+      --primary:#7c3aed; /* purple */
+      --accent:#f472b6;  /* pink */
+      --glow:#a78bfa;    /* light violet */
+      --bg-star:#0b1020;
+      --text:#f8fafc;
+      --wrong:#ef4444;
+      --right:#22c55e;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; 
+      font-family: 'Cormorant Garamond', serif;
+      color:var(--text);
+      background:
+        radial-gradient(1000px 400px at 50% 120%, rgba(124,58,237,.15), transparent 60%),
+        radial-gradient(800px 300px at 0% 0%, rgba(244,114,182,.12), transparent 60%),
+        radial-gradient(700px 400px at 100% 0%, rgba(80,200,255,.12), transparent 60%),
+        #0b1020;
+      background-size:cover;
+      position:relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iLjUiIGZpbGw9IndoaXRlIi8+PC9zdmc+') repeat;
+  background-size: 150px 150px;
+  opacity: 0.1;
+  animation: moveStars 120s linear infinite;
+}
+
+    body.custom-bg{
+      background: var(--bg-image) center/cover no-repeat fixed,
+        radial-gradient(1000px 400px at 50% 120%, rgba(124,58,237,.15), transparent 60%),
+        radial-gradient(800px 300px at 0% 0%, rgba(244,114,182,.12), transparent 60%),
+        radial-gradient(700px 400px at 100% 0%, rgba(80,200,255,.12), transparent 60%),
+        #0b1020;
+    }
+    .container{max-width:980px;margin:auto;padding:24px;display:flex;flex-direction:column;gap:16px;}
+    .card{backdrop-filter: blur(8px); background: rgba(15,20,40,.55); border:1px solid rgba(255,255,255,.08); border-radius:24px; box-shadow: 0 20px 60px rgba(0,0,0,.35); padding:20px; display: flex; flex-direction: column; flex-grow: 1;}
+    .card:hover{
+      box-shadow: 0 0 30px rgba(124,58,237,.25), 0 20px 60px rgba(0,0,0,.45);
+    }
+    .header{display:flex;gap:16px;align-items:center;justify-content:space-between}
+    .title{font-size:clamp(20px,4vw,32px);font-weight:800;letter-spacing:.5px}
+    .bar{position:relative;height:14px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;flex:1}
+    .bar>span{position:absolute;inset:0 100% 0 0;background:linear-gradient(90deg,var(--primary),var(--accent));box-shadow:0 0 24px var(--glow), inset 0 0 12px rgba(255,255,255,.25);transition:inset .5s ease}
+    .bar-wrap{display:flex;align-items:center;gap:12px;width:55%}\n    .bar-label{font-size:12px;opacity:.9}\n
+    .timer{display:flex;align-items:center;gap:10px}\n    .timer .bubble{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 25%, rgba(255,255,255,.2), rgba(255,255,255,.05));box-shadow: inset 0 0 12px rgba(255,255,255,.15), 0 0 20px rgba(124,58,237,.2); font-weight:800}\n    .timer .label{font-size:12px;opacity:.8}\n
+    .screen{display:none}\n    .screen.active{display:flex}\n
+    
+    .q-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* ✅ centers the buttons horizontally */
+  gap: 14px;             /* space between buttons */
+  margin-top: 25px;
+}
+
+.btn {
+  border: none;
+  border-radius: 12px;
+  padding: 14px 28px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #222;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: center;
+  font-size: 1.05em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+
+  width: 60%;       /* ✅ makes all buttons equal width */
+  max-width: 400px; /* ✅ keeps them neat on big screens */
+}
+
+.q-text {
+  font-size: clamp(22px, 4vw, 36px);
+  line-height: 1.2;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 16px;
+  max-width: 700px;
+}
+    .choices {
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* ✅ centers all buttons horizontally */
+  gap: 14px;
+  width: 100%;
+}
+
+
+.btn {
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;   /* ✅ consistent readable text */
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: center;
+  font-size: 1.05em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  width: 70%;
+  max-width: 420px;
+}
+
+
+
+.btn:hover {
+  transform: translateY(-3px);
+  background: rgba(20,25,50,.75);
+  box-shadow: 0 6px 20px rgba(0,0,0,.55);
+}
+
+/* Correct / Wrong states */
+.btn.correct {
+  background: rgba(34, 197, 94, 0.15); /* ✅ subtle green tint */
+  border: 2px solid #22c55e;
+  color: #fff;
+  box-shadow: 0 0 12px #22c55e;
+}
+
+.btn.wrong {
+  background: rgba(239, 68, 68, 0.15); /* ✅ subtle red tint */
+  border: 2px solid #ef4444;
+  color: #fff;
+  box-shadow: 0 0 12px #ef4444;
+}
+
+
+    .actions{display:flex;justify-content:space-between;align-items:center;margin-top:10px; width: 100%; max-width: 400px;}\n    .ghost{background:transparent;border:1px dashed rgba(255,255,255,.25); padding: 10px 14px; border-radius: 8px;}\n
+    /* Sparkles */
+    .sparkle{position:absolute; width:6px;height:6px; border-radius:50%; background: white; opacity:0; pointer-events:none}\n    @keyframes fly{ from{transform:translate(0,0) scale(.6); opacity:1} to{transform:translate(var(--dx), var(--dy)) scale(1.6); opacity:0} }\n
+    .note{font-size:12px;opacity:.7;text-align:center;margin-top:6px}\n
+    .center{display:grid;place-items:center;text-align:center}\n
+    .link-btn{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);cursor:pointer;font-weight:700}\n    .link-btn:hover{background:rgba(255,255,255,.1); box-shadow: 0 0 12px rgba(124,58,237,.4);}\n
+  </style>
+  <style>
+    @media (max-width:640px){
+      .choices{grid-template-columns:1fr}
+      .bar-wrap{width:100%}
+    }
+
+
+.mute-btn-wrapper {
+  width: 100%; /* Ensure the wrapper takes full width */
+  display: flex;
+  justify-content: flex-start; /* Align content to the left */
+}
+
+.mute-icon-btn {
+  background: transparent; /* Remove background */
+  border: none; /* Remove border */
+  padding: 0; /* Remove padding */
+  width: 40px; /* Set a fixed width for the icon button */
+  height: 40px; /* Set a fixed height for the icon button */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease;
+  
+  /* Initial sound ON icon */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.99 7-8.77s-2.99-7.79-7-8.77z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 80%; /* Adjust size as needed */
+  opacity: 0.8; /* Make it slightly transparent */
+}
+
+.mute-icon-btn:hover {
+  transform: scale(1.1); /* Slightly enlarge on hover */
+  opacity: 1;
+}
+
+/* Visually hide the text for screen readers if necessary (though icon is clear) */
+.mute-icon-btn[aria-pressed="true"] {
+  /* Sound OFF icon */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .96-.24 1.86-.65 2.65l1.61 1.61c.98-1.54 1.6-3.36 1.6-5.26 0-3.98-2.99-7.19-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.28 4.28c-.9.67-1.97 1.22-3.17 1.56v2.06c2.58-.46 4.9-1.67 6.7-3.48L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>');
+}
+
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card header">
+      <div class="title"> The Magic Awaits, My Love ✨ </div>
+      <div class="timer">
+        <div class="label">Time</div>
+        <div class="bubble" id="timer">60</div>
+      </div>
+    </div>
+    <section id="quiz" class="card screen active" style="flex-direction: column; flex-grow: 1;">
+      <div class="q-wrap">
+        <div class="q-text" id="qText">Question goes here…</div>
+        <div class="choices" id="choices"></div>
+      
+        <div class="actions">
+  <div class="mute-btn-wrapper"> <button class="mute-icon-btn" id="muteBtn" aria-pressed="false">
+      </button>
+  </div>
+</div>
+
+      <div id="sparklesLive" style="position: absolute; inset: 0; pointer-events: none;"></div>
+    </section>
+    <section id="result" class="card screen center" style="flex-direction: column;">
+      <div>
+        <h2 id="resultTitle" style="font-size:clamp(22px,4.5vw,34px);margin:10px 0 6px"></h2>
+        <p id="resultMsg" style="opacity:.9;max-width:800px;margin:0 auto 12px"></p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px">
+          <a href="index.html" class="link-btn">Play Again</a>
+          <button class="link-btn" id="shareBtn">Share Result</button>
+        </div>
+        <div class="note">Score: <span id="finalScore">0</span>/<span id="totalQ">0</span></div>
+      </div>
+      <div id="sparkles" style="position: absolute; inset: 0; pointer-events: none;"></div>
+    </section>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script>
+    const SETTINGS = {
+      BACKGROUND_IMAGE_URL: "BACKGROUND_IMAGE.jpg",
+      WAND_IMAGE_URL: "",
+      BACKGROUND_MUSIC_URL: "bg-music.mp3",
+      CORRECT_SOUND_URL: "",
+      WRONG_SOUND_URL: ""
+
+
+      
+    };
+    const QUESTIONS = {
+      basics: [
+        { q: "What is Harry Potter’s pet owl’s name?", choices: ["Hedwig", "Crookshanks", "Scabbers", "Errol"], answer: 0 },
+        { q: "Which house at Hogwarts does Harry belong to?", choices: ["Gryffindor", "Ravenclaw", "Hufflepuff", "Slytherin"], answer: 0 },
+        { q: "What shape is Harry’s scar?", choices: ["Star", "Lightning bolt", "Circle", "Wand"], answer: 1 },
+        { q: "Who is Harry’s best friend?", choices: ["Ron", "Draco", "Dudley", "Neville"], answer: 0 },
+        { q: "What sport is played on broomsticks?", choices: ["Quidditch", "Gobstones", "Exploding Snap", "Wizard Chess"], answer: 0 },
+        { q: "Which platform takes you to Hogwarts?", choices: ["10¾", "9¾", "11½", "7¾"], answer: 1 },
+        { q: "Who is headmaster when Harry arrives at Hogwarts?", choices: ["Snape", "McGonagall", "Dumbledore", "Moody"], answer: 2 },
+        { q: "What’s the name of the wizarding bank?", choices: ["Florean’s", "Gringotts", "Honeydukes", "Ollivanders"], answer: 1 },
+        { q: "What are non-magical people called?", choices: ["Muggles", "Squibs", "Ghosts", "Elves"], answer: 0 },
+        { q: "What’s the school Harry attends?", choices: ["Ilvermorny", "Beauxbatons", "Durmstrang", "Hogwarts"], answer: 3 }
+      ],
+      spells: [
+        { q: "What is the disarming spell called?", choices: ["Stupefy", "Expelliarmus", "Petrificus Totalus", "Impedimenta"], answer: 1 },
+        { q: "Which charm levitates objects?", choices: ["Leviosa", "Locomotor", "Wingardium Leviosa", "Expulso"], answer: 2 },
+        { q: "What is the counter-curse to Stupefy?", choices: ["Episkey", "Ennervate / Rennervate", "Protego", "Finite Incantatem"], answer: 1 },
+        { q: "Which spell protects you with a magical shield?", choices: ["Protego", "Rictusempra", "Serpensortia", "Incendio"], answer: 0 },
+        { q: "In a duel, which spell can knock your opponent backward?", choices: ["Diffindo", "Expulso", "Lumos", "Confundo"], answer: 1 },
+        { q: "What spell unlocks doors?", choices: ["Alohomora", "Reducio", "Dissendium", "Obliviate"], answer: 0 },
+        { q: "Which incantation silences someone?", choices: ["Quietus", "Silencio", "Sonorus", "Muteus"], answer: 1 },
+        { q: "What does “Nox” do?", choices: ["Lights wand", "Unlocks door", "Extinguishes wand light", "Summons an object"], answer: 2 },
+        { q: "If someone casts “Petrificus Totalus” on you, what happens?", choices: ["You faint", "You freeze completely", "You float", "You laugh uncontrollably"], answer: 1 },
+        { q: "Which spell summons objects to you?", choices: ["Diffindo", "Accio", "Confringo", "Reducto"], answer: 1 }
+      ],
+      potions: [
+        { q: "What potion allows the drinker to change their appearance?", choices: ["Wolfsbane", "Veritaserum", "Polyjuice Potion", "Amortentia"], answer: 2 },
+        { q: "Which plant is used to revive those who have been petrified?", choices: ["Devil’s Snare", "Mandrake", "Gillyweed", "Knotgrass"], answer: 1 },
+        { q: "What potion causes intense luck?", choices: ["Veritaserum", "Felix Felicis", "Amortentia", "Draught of Peace"], answer: 1 },
+        { q: "What is the antidote to most common poisons?", choices: ["Unicorn blood", "Bezoar", "Phoenix tears", "Murtlap essence"], answer: 1 },
+        { q: "What color should a proper Draught of Peace be?", choices: ["Gold", "Blue", "Silver", "Green"], answer: 2 },
+        { q: "Which potion forces the drinker to tell the truth?", choices: ["Veritaserum", "Polyjuice Potion", "Amortentia", "Wolfsbane"], answer: 0 },
+        { q: "What is Amortentia known for?", choices: ["Truth", "Luck", "Love", "Sleep"], answer: 2 },
+        { q: "Which potion helps a werewolf control their transformations?", choices: ["Wolfsbane", "Felix Felicis", "Elixir of Life", "Draught of Living Death"], answer: 0 },
+        { q: "What happens if you stir Polyjuice Potion the wrong way?", choices: ["It vanishes", "It becomes toxic", "It heals wounds", "It becomes water"], answer: 1 },
+        { q: "Who is known as the “Half-Blood Prince”?", choices: ["Harry Potter", "Severus Snape", "Tom Riddle", "Horace Slughorn"], answer: 1 }
+      ],
+      creatures: [
+        { q: "Which magical creature loves shiny objects?", choices: ["Niffler", "Hippogriff", "Basilisk", "Acromantula"], answer: 0 },
+        { q: "Which creatures guard Azkaban prison?", choices: ["Giants", "Dementors", "Dragons", "Trolls"], answer: 1 },
+        { q: "What spell repels Dementors?", choices: ["Expelliarmus", "Expecto Patronum", "Riddikulus", "Lumos"], answer: 1 },
+        { q: "Which creature can only be seen by those who’ve witnessed death?", choices: ["Basilisk", "Dragon", "Thestral", "Unicorn"], answer: 2 },
+        { q: "What spell would you use against a boggart?", choices: ["Crucio", "Riddikulus", "Avada Kedavra", "Stupefy"], answer: 1 },
+        { q: "What is a basilisk’s deadly ability?", choices: ["Fire breath", "Poisonous bite", "Killing gaze", "Venomous claws"], answer: 2 },
+        { q: "Which magical creature is half-horse, half-eagle?", choices: ["Hippogriff", "Griffin", "Thestral", "Centaur"], answer: 0 },
+        { q: "Which curse is known as the killing curse?", choices: ["Crucio", "Imperio", "Avada Kedavra", "Expulso"], answer: 2 },
+        { q: "What is the incantation for the Cruciatus Curse?", choices: ["Crucio", "Sectumsempra", "Dolorem", "Morsemorde"], answer: 0 },
+        { q: "What spell creates fire to fight Inferi?", choices: ["Confringo", "Incendio", "Fiendfyre", "Bombarda"], answer: 2 }
+      ]
+    };
+    let questions = [];
+    let idx = 0;
+    let score = 0;
+    let timer = null;
+    let timeLeft = 60;
+    let muted = false;
+    const quizEl = document.getElementById('quiz');
+    const resultEl = document.getElementById('result');
+    const qText = document.getElementById('qText');
+    const choices = document.getElementById('choices');
+    const timerEl = document.getElementById('timer');
+    const muteBtn = document.getElementById('muteBtn');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultMsg = document.getElementById('resultMsg');
+    const finalScore = document.getElementById('finalScore');
+    const totalQ = document.getElementById('totalQ');
+    const sparklesLive = document.getElementById('sparklesLive');
+    const sparkles = document.getElementById('sparkles');
+
+    let audioCtx = null;
+    function ensureCtx() {
+      if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+    }
+    function playBeep(freq = 880, duration = 120) {
+      if (muted) return;
+      if (SETTINGS.CORRECT_SOUND_URL || SETTINGS.WRONG_SOUND_URL) return;
+      try {
+        ensureCtx();
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = 'sine';
+        o.frequency.value = freq;
+        o.connect(g);
+        g.connect(audioCtx.destination);
+        g.gain.value = .001;
+        const now = audioCtx.currentTime;
+        g.gain.exponentialRampToValueAtTime(.15, now + .01);
+        o.start();
+        g.gain.exponentialRampToValueAtTime(.0001, now + (duration / 1000));
+        o.stop(now + (duration / 1000) + .02);
+      } catch (e) {}
+    }
+    function playCorrect() {
+      if (muted) return;
+      if (SETTINGS.CORRECT_SOUND_URL) {
+        new Audio(SETTINGS.CORRECT_SOUND_URL).play().catch(() => {});
+        return;
+      }
+      playBeep(940, 160);
+    }
+    function playWrong() {
+      if (muted) return;
+      if (SETTINGS.WRONG_SOUND_URL) {
+        new Audio(SETTINGS.WRONG_SOUND_URL).play().catch(() => {});
+        return;
+      }
+      playBeep(220, 240);
+    }
+    function setScreen(id) {
+      if (id === 'quiz') {
+        quizEl.classList.add('active');
+        resultEl.classList.remove('active');
+      } else if (id === 'result') {
+        quizEl.classList.remove('active');
+        resultEl.classList.add('active');
+      }
+    }
+    function renderQ() {
+      const {
+        q,
+        choices: chs
+      } = questions[idx];
+      qText.textContent = `Q${idx+1}. ${q}`;
+      choices.innerHTML = '';
+      chs.forEach((c, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn';
+        btn.textContent = c;
+        btn.onclick = () => select(i, btn);
+        choices.appendChild(btn);
+      });
+      resetTimer();
+    }
+    
+    // 🎉 Correct answer confetti effect
+    function fireConfetti() {
+        confetti({
+            particleCount: 50,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+    }
+
+    // 💥 Wrong answer negative burst effect
+    function fireNegativeBurst() {
+        confetti({
+            particleCount: 20,
+            angle: 90,
+            spread: 50,
+            startVelocity: 30,
+            origin: { y: 0.2 },
+            colors: ['#333333', '#555555', '#111111']
+        });
+    }
+
+    function select(i, btn) {
+      stopTimer();
+      const correctIndex = questions[idx].answer;
+      const btns = [...choices.children];
+      btns.forEach(b => b.disabled = true);
+      if (i === correctIndex) {
+        score++;
+        btn.classList.add('correct');
+        playCorrect();
+        sparkleBurst(true, sparklesLive);
+        // Call the new confetti function for correct answers
+        fireConfetti();
+      } else {
+        btn.classList.add('wrong');
+        btns[correctIndex].classList.add('correct');
+        playWrong();
+        sparkleBurst(false, sparklesLive);
+        // Call the new negative burst function for wrong answers
+        fireNegativeBurst();
+      }
+      setTimeout(next, 4000);
+    }
+    function next() {
+      idx++;
+      if (idx >= questions.length) {
+        showResult();
+      } else {
+        renderQ();
+      }
+    }
+    function showResult() {
+      setScreen('result');
+      finalScore.textContent = score;
+      totalQ.textContent = questions.length;
+      sparkleBurst(true, sparkles, 40);
+      const shareBtn = document.getElementById('shareBtn');
+      shareBtn.onclick = async () => {
+        const text = `I scored ${score}/${questions.length} on the Harry Potter Wand Quiz ✨`;
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              text
+            });
+          } catch (e) {}
+        } else {
+          navigator.clipboard.writeText(text);
+          shareBtn.textContent = 'Copied!';
+          setTimeout(() => shareBtn.textContent = 'Share Result', 1500);
+        }
+      };
+      if (score === questions.length) {
+        resultTitle.textContent = 'Lumos Maxima! 💡';
+        resultMsg.textContent = 'Perfect score, Ishita! Your magic shines bright!';
+      } else if (score >= 5) {
+        resultTitle.textContent = 'Brilliant! 💖';
+        resultMsg.textContent = 'Your magic is strong, Laado. Keep practicing!';
+      } else {
+        resultTitle.textContent = 'Magical Start ✨';
+        resultMsg.textContent = "You've still got to cover a lot, but every wizard starts somewhere.";
+      }
+    }
+    function resetTimer() {
+      timeLeft = 60;
+      timerEl.textContent = timeLeft;
+      clearInterval(timer);
+      timer = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          timeLeft = 0;
+          timerEl.textContent = '0';
+          const correctIndex = questions[idx].answer;
+          const btns = [...choices.children];
+          btns.forEach(b => b.disabled = true);
+          btns[correctIndex].classList.add('correct');
+          playWrong();
+          sparkleBurst(false, sparklesLive);
+          setTimeout(next, 4000);
+        }
+      }, 1000);
+    }
+    function stopTimer() {
+      clearInterval(timer);
+    }
+    function sparkleBurst(isGood = true, container = sparklesLive, count = 18){
+      for(let i=0;i<count;i++){
+        const s = document.createElement('div');
+        s.className='sparkle';
+        const dx = (Math.random()*120-60)+ 'px';
+        const dy = (isGood? -Math.random()*120 : Math.random()*60) + 'px';
+        s.style.setProperty('--dx', dx);
+        s.style.setProperty('--dy', dy);
+        // Position sparkles relative to the center of the quiz content
+        s.style.left = `calc(50% + ${Math.random()*200 - 100}px)`; // Spread horizontally
+        s.style.top  = `calc(50% + ${Math.random()*100 - 50}px)`; // Spread vertically
+        s.style.animation = `fly ${450+Math.random()*400}ms ease-out forwards`;
+        container.appendChild(s);
+        setTimeout(()=> s.remove(), 900);
+      }
+    }
+   
+   
+    document.addEventListener('DOMContentLoaded', () => {
+    // Check for a background image and apply it if a URL is provided.
+    if (SETTINGS.BACKGROUND_IMAGE_URL) {
+      document.body.style.setProperty('--bg-image', `url('${SETTINGS.BACKGROUND_IMAGE_URL}')`);
+      document.body.classList.add('custom-bg');
+    }
+    
+    // Check for background music and set it up.
+    if (SETTINGS.BACKGROUND_MUSIC_URL) {
+      const bg = new Audio(SETTINGS.BACKGROUND_MUSIC_URL);
+      bg.loop = true;
+      bg.volume = .25;
+      document.addEventListener('click', () => {
+        if (!muted) bg.play().catch(() => {});
+      }, {
+        once: true
+      });
+      window.__bgMusic = bg;
+    }
+    
+    // Load the questions based on the URL or default to basics.
+    const urlParams = new URLSearchParams(window.location.search);
+    const sectionKey = urlParams.get('section');
+    if (sectionKey && QUESTIONS[sectionKey]) {
+        questions = QUESTIONS[sectionKey];
+    } else {
+        questions = QUESTIONS.basics;
+    }
+    
+    totalQ.textContent = questions.length;
+    renderQ();
+
+    muteBtn.onclick = () => {
+        muted = !muted;
+        muteBtn.setAttribute('aria-pressed', String(muted));
+        if (window.__bgMusic) {
+            if (muted) window.__bgMusic.pause();
+            else window.__bgMusic.play().catch(() => {});
+        }
+    };
+});
+    
+  </script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About the Wizarding Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+
+@keyframes moveStars {
+  from { background-position: 0 0; }
+  to { background-position: 1500px 1500px; } /* Move far */
+}
+
+        :root{
+            --primary:#7c3aed; /* purple */
+            --accent:#f472b6;  /* pink */
+            --glow:#a78bfa;    /* light violet */
+            --bg-star:#0b1020;
+            --text:#f8fafc;
+            --wrong:#ef4444;
+            --right:#22c55e;
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%}
+
+        body{
+            margin:0; 
+            font-family: 'Cormorant Garamond', serif;
+            color:var(--text);
+            background:
+                radial-gradient(1000px 400px at 50% 120%, rgba(124,58,237,.15), transparent 60%),
+                radial-gradient(800px 300px at 0% 0%, rgba(244,114,182,.12), transparent 60%),
+                radial-gradient(700px 400px at 100% 0%, rgba(80,200,255,.12), transparent 60%),
+                #0b1020;
+            background-size:cover;
+            position:relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iLjUiIGZpbGw9IndoaXRlIi8+PC9zdmc+') repeat;
+  background-size: 150px 150px;
+  opacity: 0.1;
+  animation: moveStars 120s linear infinite;
+}
+
+        /* This style is crucial for displaying the custom background image */
+        body.custom-bg{
+            background: var(--bg-image) center/cover no-repeat fixed,
+                radial-gradient(1000px 400px at 50% 120%, rgba(124,58,237,.15), transparent 60%),
+                radial-gradient(800px 300px at 0% 0%, rgba(244,114,182,.12), transparent 60%),
+                radial-gradient(700px 400px at 100% 0%, rgba(80,200,255,.12), transparent 60%),
+                #0b1020;
+        }
+        .container{
+            max-width:980px;
+            margin:auto;
+            padding:24px;
+            display:flex;
+            flex-direction:column;
+            gap:16px;
+        }
+        .card{
+            backdrop-filter: blur(8px); 
+            background: rgba(15,20,40,.55); 
+            border:1px solid rgba(255,255,255,.08); 
+            border-radius:24px; 
+            box-shadow: 0 20px 60px rgba(0,0,0,.35); 
+            padding:20px; 
+            display: flex; 
+            flex-direction: column; 
+            flex-grow: 1;
+        }
+        .card h1, .card h2{
+            font-size: clamp(26px,5vw,40px);
+            margin:0 0 10px;
+            text-align: center;
+        }
+        .card h2 {
+            font-size: clamp(22px,4vw,32px);
+            margin-top: 20px;
+        }
+        .card p, .card ul, .card li {
+            font-size: clamp(16px, 2.5vw, 19px);
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        .back-btn{
+            display:inline-block;
+            margin-top:20px;
+            padding:12px 24px;
+            border-radius:999px;
+            background:rgba(255,255,255,.1);
+            color:var(--text);
+            text-decoration:none;
+            font-weight:700;
+            transition:.3s;
+        }
+        .back-btn:hover{
+            background:rgba(255,255,255,.2);
+            transform:translateY(-2px);
+        }
+        .list {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        .list li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body class="custom-bg">
+    <div class="container">
+        <section class="card">
+            <h1>About the Magical Quiz</h1>
+            <p>
+                Welcome to the Magical Quiz! This game is designed to challenge your knowledge of the wizarding world. With every correct answer, you will charge your wand's power bar, bringing you closer to a special message.
+            </p>
+            
+            <h2>How to Play</h2>
+            <p>
+                To begin your quest, simply select a quiz category from the homepage. Each quiz consists of a series of questions with a 60-second timer. Choose your answer carefully—one wrong move, and the magic might fizzle!
+            </p>
+            <ul class="list">
+                <b><li><u>Correct Answer:</u></b> A celebratory confetti burst.</li>
+                <b><li><u>Incorrect Answer:</u></b> A subtle "negative burst" animation appears.</li>
+            </ul>
+            
+            <h2>Enabling Audio</h2>
+            <p>
+                To fully immerse yourself in the magic, this quiz includes background music and sound effects. However, for security reasons, modern web browsers do not allow audio to play automatically.
+            </p>
+            <p>
+                To enable all sounds, simply click on any button on the page. Your first click will grant the browser permission to play audio, and the background music will begin.
+            </p>
+            <ul class="list">
+                <li>A <b><u>Mute/Unmute</u></b> button is available on the quiz page to control the background music at any time.</li>
+            </ul>
+
+            <a href="index.html" class="back-btn">Go Back to Quiz</a>
+        </section>
+    </div>
+    <script>
+        const SETTINGS = {
+            BACKGROUND_IMAGE_URL: "BACKGROUND_IMAGE.jpg",
+            BACKGROUND_MUSIC_URL: "bg-music_cover.mp3",
+        };
+
+        function applyCustomAssets() {
+            if (SETTINGS.BACKGROUND_IMAGE_URL) {
+                document.body.style.setProperty('--bg-image', `url('${SETTINGS.BACKGROUND_IMAGE_URL}')`);
+            }
+            if (SETTINGS.BACKGROUND_MUSIC_URL) {
+                const bg = new Audio(SETTINGS.BACKGROUND_MUSIC_URL);
+                bg.loop = true;
+                bg.volume = .25;
+                document.addEventListener('click', () => {
+                    bg.play().catch(() => {});
+                }, {
+                    once: true
+                });
+            }
+        }
+        applyCustomAssets();
+    </script>
+</body>
+</html>

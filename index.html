@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wizarding Quiz - Select Section</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #7c3aed; /* purple */
+      --accent: #f472b6;  /* pink */
+      --glow: #a78bfa;    /* light violet */
+      --bg-star: #0b1020; /* dark background */
+      --text: #f8fafc;    /* light text */
+      --box-bg: rgba(15, 20, 40, .65); /* slightly more opaque for readability */
+      --box-border: rgba(255, 255, 255, 0.1);
+      --button-bg: linear-gradient(45deg, #a78bfa, #7c3aed); /* purple gradient */
+      --button-text: #fff;
+      --shadow-light: rgba(124, 58, 237, 0.25);
+      --shadow-dark: rgba(0, 0, 0, 0.45);
+    }
+
+    /* Base styles */
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: 'Cormorant Garamond', serif; /* Body text font */
+      color: var(--text);
+      background:
+        radial-gradient(1200px 500px at 50% 120%, rgba(124, 58, 237, .18), transparent 70%),
+        radial-gradient(1000px 400px at 0% 0%, rgba(244, 114, 182, .15), transparent 70%),
+        radial-gradient(900px 500px at 100% 0%, rgba(80, 200, 255, .15), transparent 70%),
+        var(--bg-star); /* Dark, starry base background */
+      background-size: cover;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden; /* Hide overflow from particles */
+    }
+
+    /* Animated Star/Particle Background */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iLjUiIGZpbGw9IndoaXRlIi8+PC9zdmc+') repeat; /* Tiny white dots */
+      background-size: 150px 150px; /* Adjust density */
+      opacity: 0.1;
+      animation: moveStars 120s linear infinite; /* Slow, continuous movement */
+    }
+
+    @keyframes moveStars {
+      from { background-position: 0 0; }
+      to { background-position: 1500px 1500px; } /* Move far */
+    }
+
+    /* This style is crucial for displaying the custom background image */
+    body.custom-bg{
+      background: var(--bg-image) center/cover no-repeat fixed,
+        radial-gradient(1000px 400px at 50% 120%, rgba(124,58,237,.15), transparent 60%),
+        radial-gradient(800px 300px at 0% 0%, rgba(244,114,182,.12), transparent 60%),
+        radial-gradient(700px 400px at 100% 0%, rgba(80,200,255,.12), transparent 60%),
+        #0b1020;
+    }
+    .container {
+      max-width: 980px;
+      margin: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Card */
+    .card {
+      backdrop-filter: blur(8px); 
+      background: rgba(15,20,40,.55); 
+      border:1px solid rgba(255,255,255,.08); 
+      border-radius:24px; 
+      box-shadow: 0 20px 60px rgba(0,0,0,.35); 
+      padding:20px; 
+      text-decoration: none; 
+      color: inherit; 
+      display: block;
+    }
+    
+    .card:hover{
+      box-shadow: 0 0 30px rgba(124,58,237,.25), 0 20px 60px rgba(0,0,0,.45);
+    }
+    
+    /* Section Cards */
+    #sectionSelect {
+      display: grid;
+      gap: 16px;
+    }
+    .section-card {
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .section-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px rgba(124,58,237,.4), 0 20px 60px rgba(0,0,0,.35);
+    }
+    .section-card h2 {
+      font-size: 2.5rem;
+      margin: 0 0 8px 0;
+      letter-spacing: 1px;
+    }
+    .section-card p {
+      opacity: 0.8;
+      margin: 0;
+    }
+
+    /* Main Card */
+    #start {
+      max-width: 600px;
+      padding: 30px;
+      background: var(--box-bg);
+      border: 1px solid var(--box-border);
+      border-radius: 24px;
+      box-shadow: 0 0 40px rgba(124, 58, 237, 0.3), 0 20px 60px var(--shadow-dark);
+      text-align: center;
+      backdrop-filter: blur(12px);
+      position: relative;
+      z-index: 10;
+      animation: fadeIn 1.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 700;
+      color: #ffd700;
+      margin-bottom: 20px;
+      text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+    }
+
+    p {
+      font-size: clamp(16px, 2.5vw, 19px);
+      line-height: 1.6;
+      margin-bottom: 25px;
+      opacity: 0.9;
+    }
+
+    /* Button styling */
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 30px;
+      border-radius: 999px;
+      border: 2px solid transparent;
+      background: var(--button-bg);
+      color: var(--button-text);
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: clamp(18px, 3vw, 22px);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 20px rgba(124, 58, 237, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .link-btn:hover {
+      transform: translateY(-3px);
+      border-color: #ffd700;
+      box-shadow: 0 8px 25px rgba(124, 58, 237, 0.6), 0 0 30px rgba(255, 215, 0, 0.5);
+    }
+
+    .link-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.4s ease-out, height 0.4s ease-out;
+      opacity: 0;
+    }
+
+    .link-btn:hover::before {
+      width: 200px;
+      height: 200px;
+      opacity: 1;
+    }
+
+    .link-btn span {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .note {
+      font-size: 12px;
+      opacity: 0.7;
+      text-align: center;
+      margin-top: 6px;
+    }
+
+    .secondary-btn {
+    background: transparent;
+    border-color: var(--text);
+    opacity: 0.8;
+    box-shadow: none;
+    font-size: 16px;
+    padding: 10px 20px;
+}
+.secondary-btn:hover {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+    
+    .countdown-timer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-top: 15px;
+      font-family: 'Cinzel Decorative', serif;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+    
+    .countdown-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: clamp(14px, 3vw, 18px);
+      font-weight: 700;
+      opacity: 0.9;
+    }
+    
+    .countdown-value {
+      font-size: clamp(24px, 5vw, 40px);
+      color: #fff;
+      font-weight: 700;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    }
+    
+    .button-group {
+      display: flex;
+      flex-direction: column; /* Stack buttons vertically */
+      gap: 15px; /* Space between the buttons */
+      margin-top: 30px; /* Space between countdown and buttons */
+      align-items: center; /* Center buttons horizontally */
+    }
+
+  </style>
+</head>
+<body class="custom-bg">
+  <div class="container">
+    <section id="start" class="card active center">
+      <div>
+        <h1>Laado, are you ready for some magic? ✨</h1>
+        <p>A true wizard's knowledge will be tested. Power your wand with every correct answer and unlock a special message.</p>
+        
+        <div id="countdown" class="countdown-timer">
+          <div class="countdown-item">
+            <span id="days" class="countdown-value"></span>
+            <span class="countdown-label">Days</span>
+          </div>
+          <div class="countdown-item">
+            <span id="hours" class="countdown-value"></span>
+            <span class="countdown-label">Hours</span>
+          </div>
+          <div class="countdown-item">
+            <span id="minutes" class="countdown-value"></span>
+            <span class="countdown-label">Minutes</span>
+          </div>
+          <div class="countdown-item">
+            <span id="seconds" class="countdown-value"></span>
+            <span class="countdown-label">Seconds</span>
+          </div>
+        </div>
+        
+        <div class="button-group">
+          <a href="#" class="link-btn" id="startBtn">
+            <span>Enter the Quest</span>
+            <span role="img" aria-label="Magic Wand">🪄</span>
+          </a>
+          <a href="info.html" class="link-btn secondary-btn">Read More</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="sectionSelect" class="card" style="display: none;">
+      <a href="quiz.html?section=basics" class="section-card card" data-section="basics">
+        <h2>First-Year Foundations</h2>
+        <p>Your first-year knowledge test.</p>
+      </a>
+      <a href="quiz.html?section=spells" class="section-card card" data-section="spells">
+        <h2>Spells & Charms</h2>
+        <p>Prove you can wield your wand.</p>
+      </a>
+      <a href="quiz.html?section=potions" class="section-card card" data-section="potions">
+        <h2>Potions & Alchemy</h2>
+        <p>A quiz on magical brews.</p>
+      </a>
+      <a href="quiz.html?section=creatures" class="section-card card" data-section="creatures">
+        <h2>Creatures & Dark Arts</h2>
+        <p>A test on magical beasts and things.</p>
+      </a>
+    </section>
+  </div>
+  <script>
+    const SETTINGS = {
+      BACKGROUND_IMAGE_URL: "BACKGROUND_IMAGE.jpg",
+      BACKGROUND_MUSIC_URL: "bg-music_cover.mp3",
+    };
+
+    const startEl = document.getElementById('start');
+    const sectionSelectEl = document.getElementById('sectionSelect');
+    
+    let backgroundMusic = null;
+
+    function applyCustomAssets() {
+      if (SETTINGS.BACKGROUND_IMAGE_URL) {
+        document.body.style.setProperty('--bg-image', `url('${SETTINGS.BACKGROUND_IMAGE_URL}')`);
+      }
+      
+      if (SETTINGS.BACKGROUND_MUSIC_URL) {
+        backgroundMusic = new Audio(SETTINGS.BACKGROUND_MUSIC_URL);
+        backgroundMusic.loop = true;
+        backgroundMusic.volume = .25;
+      }
+    }
+
+    applyCustomAssets();
+
+    document.getElementById('startBtn').onclick = (e) => {
+      e.preventDefault();
+      if (backgroundMusic) {
+          backgroundMusic.play().catch(() => {});
+      }
+      
+      startEl.style.display = 'none';
+      sectionSelectEl.style.display = 'grid';
+    };
+    
+    // Countdown Logic
+    const countdownDate = new Date("Sep 26, 2025 00:00:00").getTime();
+    
+    const x = setInterval(function() {
+      const now = new Date().getTime();
+      const distance = countdownDate - now;
+      
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+      document.getElementById("days").textContent = days;
+      document.getElementById("hours").textContent = hours;
+      document.getElementById("minutes").textContent = minutes;
+      document.getElementById("seconds").textContent = seconds;
+      
+      if (distance < 0) {
+        clearInterval(x);
+        document.getElementById("countdown").innerHTML = "The Quest Has Begun!";
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
